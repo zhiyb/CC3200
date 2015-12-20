@@ -6,18 +6,18 @@ TOPDIR	:= $(TOPDIR)
 
 SDK	?= $(TOPDIR)/cc3200-sdk
 
-# Since programming tool is platform dependent,
-# set it inside Makefile_platform.mk.
-# However this settings have no effect on compiling,
-# so if flashing is not required then this can be ignored
+# To choose a programming tool for specific platform,
+# write a Makefile_platform.mk file.
+# However this has no effect on compiling,
+# so if flashing is not required then this can be ignored.
 #
 # * PROGCOM: COM port connected to CC3200 UART interface
 #
-# e.g. Windows:
+# e.g. on Windows:
 # PROGCOM	= 10
 # include $(TOPDIR)/platform/windows/Makefile.mk
 #
-# e.g. Linux:
+# e.g. on Linux:
 # PROGCOM	= /dev/ttyACM0
 # include $(TOPDIR)/platform/linux/Makefile.mk
 #
