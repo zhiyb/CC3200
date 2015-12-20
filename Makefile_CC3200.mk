@@ -6,8 +6,22 @@ TOPDIR	:= $(TOPDIR)
 
 SDK	?= $(TOPDIR)/cc3200-sdk
 
-PROGCOM	?= 10
-PROGRAM	?= cd $(TOPDIR)/flash; ./cc3200prog $(PROGCOM) $(shell pwd)/$(TRG).bin h
+# Since programming tool is platform dependent,
+# set it inside Makefile_platform.mk.
+# However this settings have no effect on compiling,
+# so if flashing is not required then this can be ignored
+#
+# * PROGCOM: COM port connected to CC3200 UART interface
+#
+# e.g. Windows:
+# PROGCOM	= 10
+# include $(TOPDIR)/platform/windows/Makefile.mk
+#
+# e.g. Linux:
+# PROGCOM	= /dev/ttyACM0
+# include $(TOPDIR)/platform/linux/Makefile.mk
+#
+-include $(TOPDIR)/Makefile_platform.mk
 
 OBJCOPY	= $(CROSS_COMPILE)objcopy
 OBJDUMP	= $(CROSS_COMPILE)objdump
