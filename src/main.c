@@ -16,7 +16,7 @@
 #include "utils.h"
 
 #include "gpio_if.h"
-#include "pinmux.h"
+#include "pin_mux_config.h"
 
 #define LED	30
 #define DELAY	(F_CPU / 10 / 2)
