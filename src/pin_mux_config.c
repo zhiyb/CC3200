@@ -1,7 +1,7 @@
 //*****************************************************************************
-// pinmux.h
+// pin_mux_config.c
 //
-// function prototype for pinmuxconfig
+// configure the device pins for different signals
 //
 // Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
 // 
@@ -36,14 +36,30 @@
 //
 //*****************************************************************************
 
-// This file was automatically generated on 7/21/2014 at 3:06:20 PM
-// by TI PinMux version 3.0.334
+// This file was automatically generated on ‎20‎/‎12‎/‎2015 at ‎16‎:‎22‎:‎40
+// by TI PinMux version 
 //
 //*****************************************************************************
 
-#ifndef __PINMUX_H__
-#define __PINMUX_H__
+#include "pin_mux_config.h" 
+#include "hw_types.h"
+#include "hw_memmap.h"
+#include "hw_gpio.h"
+#include "pin.h"
+#include "gpio.h"
+#include "prcm.h"
 
-extern void PinMuxConfig(void);
+//*****************************************************************************
+void PinMuxConfig(void)
+{
+    //
+    // Enable Peripheral Clocks 
+    //
+    PRCMPeripheralClkEnable(PRCM_GPIOA3, PRCM_RUN_MODE_CLK);
 
-#endif //  __PINMUX_H__
+    //
+    // Configure PIN_53 for GPIO Output
+    //
+    PinTypeGPIO(PIN_53, PIN_MODE_0, false);
+    GPIODirModeSet(GPIOA3_BASE, 0x40, GPIO_DIR_MODE_OUT);
+}

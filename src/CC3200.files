@@ -1,8 +1,8 @@
 gpio_if.c
 gpio_if.h
 main.c
-pinmux.c
-pinmux.h
+pin_mux_config.c
+pin_mux_config.h
 startup_gcc.c
 ../cc3200-sdk/driverlib/adc.c
 ../cc3200-sdk/driverlib/adc.h

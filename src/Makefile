@@ -1,6 +1,6 @@
 TRG	= HelloWorld
-SRC	= main.c pinmux.c
-SRC	+= gpio_if.c
+SRC	= main.c
+SRC	+= pin_mux_config.c
 SRC	+= startup_gcc.c
 
 LDSCRIPT	= cc3200.ld
