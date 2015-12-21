@@ -15,11 +15,12 @@
 #include "gpio.h"
 #include "utils.h"
 
-#include "gpio_if.h"
+// Local includes
 #include "pin_mux_config.h"
+#include "uart0.h"
 
 #define LED	30
-#define DELAY	(F_CPU / 10 / 2)
+#define DELAY	(F_CPU / 10)
 
 static void LEDBlinkyRoutine()
 {
@@ -28,8 +29,10 @@ static void LEDBlinkyRoutine()
 	for (;;) {
 		MAP_UtilsDelay(DELAY);
 		MAP_GPIOPinWrite(GPIOA3_BASE, 1UL << (LED % 8), 0);
+		uart0_write_string("Hello, world! LED is now ON.\n");
 		MAP_UtilsDelay(DELAY);
 		MAP_GPIOPinWrite(GPIOA3_BASE, 1UL << (LED % 8), 1UL << (LED % 8));
+		uart0_write_string("Hello, world! LED is now OFF.\n");
 	}
 
 }
@@ -40,6 +43,8 @@ static void BoardInit()
 	MAP_IntEnable(FAULT_SYSTICK);
 
 	PRCMCC3200MCUInit();
+
+	uart0_init();
 }
 
 int main()

@@ -5,11 +5,43 @@ TOPDIR	?= $(dir $(lastword $(MAKEFILE_LIST)))
 TOPDIR	:= $(TOPDIR)
 
 SDK	?= $(TOPDIR)/cc3200-sdk
+INCDIRS	+= $(SDK)/inc $(SDK)/driverlib
+LIBS	+= $(SDK)/driverlib/gcc/exe/libdriver.a
+
+OBJCOPY	= $(CROSS_COMPILE)objcopy
+OBJDUMP	= $(CROSS_COMPILE)objdump
+
+# Cross compile defines
+CROSS_COMPILE	= arm-none-eabi-
+SUFFIX	= .axf
+
+# Definitions
+CPU	= -mcpu=cortex-m4
+#FPU	= -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+
+MCU_FREQ	= 80000000
+DEFS	+= -DF_CPU=$(MCU_FREQ)
+
+ifdef BAUD
+DEFS	+= -DBAUD=$(BAUD)
+endif
+
+OPTLEVEL	?= 0
+
+# Rules
+ifndef LIBTRG
+EXTRA_TARGETS	+= lst bin
+PHONYTRGS	+= lst
+endif
+
+include $(TOPDIR)/Makefile_generic.mk
 
 # To choose a programming tool for specific platform,
 # write a Makefile_platform.mk file.
 # However this has no effect on compiling,
 # so if flashing is not required then this can be ignored.
+# Platform dependent Makefile targets may also be defined,
+# e.g. launch PuTTY after flashing.
 #
 # * PROGCOM: COM port connected to CC3200 UART interface
 #
@@ -22,31 +54,6 @@ SDK	?= $(TOPDIR)/cc3200-sdk
 # include $(TOPDIR)/platform/linux/Makefile.mk
 #
 -include $(TOPDIR)/Makefile_platform.mk
-
-OBJCOPY	= $(CROSS_COMPILE)objcopy
-OBJDUMP	= $(CROSS_COMPILE)objdump
-
-# Cross compile defines
-CROSS_COMPILE	= arm-none-eabi-
-SUFFIX	= .axf
-
-# Definitions
-CPU	= -mcpu=cortex-m4
-#FPU	= -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
-MCU_FREQ	= 80000000
-
-DEFS	+= -DF_CPU=$(MCU_FREQ)
-INCDIRS	+= $(SDK)/inc $(SDK)/driverlib
-LIBS	+= $(SDK)/driverlib/gcc/exe/libdriver.a
-OPTLEVEL	?= 0
-
-# Rules
-ifndef LIBTRG
-EXTRA_TARGETS	+= lst bin
-PHONYTRGS	+= lst
-endif
-
-include $(TOPDIR)/Makefile_generic.mk
 
 #
 # Get the location of libgcc.a from the GCC front-end.

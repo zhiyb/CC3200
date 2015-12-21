@@ -88,3 +88,7 @@ Makefile
 cc3200.ld
 ../Makefile_CC3200.mk
 ../Makefile_generic.mk
+uart0/Makefile
+uart0/uart0.c
+uart0/uart0.h
+../Makefile_platform.mk
