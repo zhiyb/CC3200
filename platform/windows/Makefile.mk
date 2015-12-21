@@ -11,3 +11,6 @@ PROGRAM	= cd $(PROGDIR); ./cc3200prog.exe $(PROGCOM) $(shell pwd)/$(TRG).bin h
 else
 PROGRAM	= cd $(PROGDIR); ./cc3200prog.exe $(PROGCOM) $(shell pwd)/$(TRG).bin n
 endif
+
+run: flash
+	putty.exe -serial COM$(PROGCOM) -sercfg $(BAUD)
