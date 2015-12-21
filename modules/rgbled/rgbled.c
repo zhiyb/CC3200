@@ -7,11 +7,9 @@
 #include "pin.h"
 #include "gpio.h"
 #include "prcm.h"
-#include "timer.h"
 #include "utils.h"
 
 #include <gpio_if.h>
-#include <timer_if.h>
 #include <macros.h>
 #include "rgbled.h"
 
@@ -29,12 +27,10 @@ static void send(uint8_t data)
 {
 	uint8_t cnt = 8;
 	do {
-		//while (timer_enabled(TIMERA3_BASE, TIMER_B));
 		gpio_pad_set(RGBLED_PAD);
 		if (!(data & 0x80))
 			gpio_pad_clear(RGBLED_PAD);
 		MAP_UtilsDelay(F_CPU / 10 * 4 / 10 / 1000 / 1000);
-		//TimerEnable(TIMERA3_BASE, TIMER_B);
 		gpio_pad_clear(RGBLED_PAD);
 		MAP_UtilsDelay(F_CPU / 10 * 4 / 10 / 1000 / 1000);
 		data <<= 1;
@@ -48,16 +44,7 @@ void rgbLED_init()
 	gpio_pad_dir(RGBLED_PAD, GPIO_DIR_MODE_OUT);
 	gpio_pad_clear(RGBLED_PAD);
 
-	// Use timer for transmission timing
-	MAP_PRCMPeripheralClkEnable(PRCM_TIMERA3, PRCM_RUN_MODE_CLK);
-	TimerDisable(TIMERA3_BASE, TIMER_B);
-	TimerConfigure(TIMERA3_BASE, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_ONE_SHOT | TIMER_CFG_B_ONE_SHOT);
-	TimerControlStall(TIMERA3_BASE, TIMER_B, false);
-	TimerIntDisable(TIMERA3_BASE, TIMER_TIMB_TIMEOUT | TIMER_CAPB_EVENT | TIMER_CAPB_MATCH);
-	TimerLoadSet(TIMERA3_BASE, TIMER_B, F_CPU * 4 / 10 / 1000 / 1000);	// 0.4us
-	TimerMatchSet(TIMERA3_BASE, TIMER_B, 0);
-	TimerPrescaleMatchSet(TIMERA3_BASE, TIMER_B, 0);
-	TimerPrescaleSet(TIMERA3_BASE, TIMER_B, 0);
+	MAP_UtilsDelay(F_CPU / 10 * 10 / 1000);
 }
 
 void rgbLED_refresh()
