@@ -10,7 +10,7 @@
 #include "utils.h"
 
 #include <gpio_if.h>
-#include <macros.h>
+#include <colours.h>
 #include "rgbled.h"
 
 uint32_t rgbLED[RGBLED_NUM] = {

@@ -18,6 +18,7 @@ SUFFIX	= .axf
 # Definitions
 CPU	= -mcpu=cortex-m4
 #FPU	= -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+FPU	= -msoft-float -mfloat-abi=soft
 
 MCU_FREQ	= 80000000
 DEFS	+= -DF_CPU=$(MCU_FREQ)
@@ -86,7 +87,8 @@ CFLAG	+= -mthumb             \
 	   -std=c99            \
 	   -g
 
-LDFLAG	+= --gc-sections --entry ${ENTRY} '${LIBM}' '${LIBC}' '${LIBGCC}'
+LDFLAG	+= ${CPU} ${FPU} -Wl,--gc-sections --entry ${ENTRY}
+LIBS	+= '${LIBM}' '${LIBC}' '${LIBGCC}'
 
 # Following are not needed when building libraries
 ifndef LIBTRG

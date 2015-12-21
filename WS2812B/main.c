@@ -18,25 +18,48 @@
 // Local includes
 #include <uart0.h>
 #include <rgbled.h>
+#include <colours.h>
 #include <gpio_if.h>
 
 #define LED	30
-#define DELAY	(F_CPU / 10)
+#define DELAY	64
 
-static inline void LEDBlinkyRoutine()
+static inline void demo()
 {
-	unsigned long i = 20 / 2;	// 20s
-	// The LED is iverted
-	while (i--) {
-		gpio_pad_clear(LED);
-		uart0_write_string("Hello, world! LED is now ON.\n");
-		MAP_UtilsDelay(DELAY);
+	// Initialise
+	unsigned long led = 0;
+	unsigned long i = 0;
+	uint8_t h[RGBLED_NUM] = {0};
+	uint8_t s = 255;
+	uint8_t v = 127;
 
-		gpio_pad_set(LED)
-		uart0_write_string("Hello, world! LED is now OFF.\n");
-		MAP_UtilsDelay(DELAY);
+	i = RGBLED_NUM;
+	while (i--)
+		h[i] = (uint16_t)255 * i / RGBLED_NUM;
+
+	for (;;) {
+		// RGB LED
+		i = RGBLED_NUM;
+		while (i--)
+			rgbLED[i] = colour_hsv_to_rgb(COLOUR_888(h[i]++, s, v));
+
+		// RGB LED refresh
+		rgbLED_refresh();
+
+		// LED & UART
+		if (led >= DELAY) {
+			gpio_pad_set(LED);
+			if (led == DELAY)
+				uart0_write_string("Hello, world! LED is now OFF.\n");
+		} else {
+			gpio_pad_clear(LED);
+			if (led == 0)
+				uart0_write_string("Hello, world! LED is now ON.\n");
+		}
+		led = (led + 1) % (DELAY << 1);
+
+		MAP_UtilsDelay(F_CPU / 10 / DELAY);
 	}
-
 }
 
 static inline void BoardInit()
@@ -59,16 +82,6 @@ int main()
 {
 	BoardInit();
 
-	//LEDBlinkyRoutine();
-	for (;;) {
-		rgbLED_refresh();
-		MAP_UtilsDelay(DELAY);
-		uint8_t i = RGBLED_NUM - 1;
-		while (i--) {
-			uint32_t tmp = rgbLED[i];
-			rgbLED[i] = rgbLED[(i + 1) % RGBLED_NUM];
-			rgbLED[(i + 1) % RGBLED_NUM] = tmp;
-		}
-	}
+	demo();
 	return 0;
 }
