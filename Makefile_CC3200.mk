@@ -41,7 +41,6 @@ include $(TOPDIR)/Makefile_generic.mk
 # However this has no effect on compiling,
 # so if flashing is not required then this can be ignored.
 # Platform dependent Makefile targets may also be defined,
-# e.g. launch PuTTY after flashing.
 #
 # * PROGCOM: COM port connected to CC3200 UART interface
 #
@@ -54,6 +53,9 @@ include $(TOPDIR)/Makefile_generic.mk
 # include $(TOPDIR)/platform/linux/Makefile.mk
 #
 -include $(TOPDIR)/Makefile_platform.mk
+
+run: flash
+	$(MAKE) uart
 
 #
 # Get the location of libgcc.a from the GCC front-end.
