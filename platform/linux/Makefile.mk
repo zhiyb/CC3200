@@ -11,3 +11,6 @@ PROGRAM	= cd $(PROGDIR); ./cc3200prog $(PROGCOM) $(shell pwd)/$(TRG).bin h
 else
 PROGRAM	= cd $(PROGDIR); ./cc3200prog $(PROGCOM) $(shell pwd)/$(TRG).bin n
 endif
+
+run: flash
+	microcom -s $(BAUD) -p $(PROGCOM)
