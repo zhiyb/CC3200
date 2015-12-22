@@ -118,7 +118,7 @@ CFLAGS=-mthumb             \
        -MD                 \
        -std=c99            \
        -g 		   \
-       -O0 		   \
+       -Os 		   \
        -c                  
 
 #
