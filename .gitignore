@@ -1,3 +1,7 @@
 Makefile_platform.mk
 *.creator.user
 .*.swp
+*.axf
+*.o
+*.lst
+*.bin

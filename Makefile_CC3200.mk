@@ -5,8 +5,13 @@ TOPDIR	?= $(dir $(lastword $(MAKEFILE_LIST)))
 TOPDIR	:= $(TOPDIR)
 
 SDK	?= $(TOPDIR)/cc3200-sdk
-INCDIRS	+= $(SDK)/inc $(SDK)/driverlib
-LIBS	+= $(SDK)/driverlib/gcc/exe/libdriver.a
+
+INCDIRS	+= $(SDK)/inc
+INCDIRS	+= $(SDK)/driverlib
+INCDIRS	+= $(SDK)/simplelink/include
+
+LIBS	+= $(SDK)/driverlib/gcc/exe/libdriver_opt.a
+LIBS	+= $(SDK)/simplelink/gcc/exe/libsimplelink_nonos_opt.a
 
 OBJCOPY	= $(CROSS_COMPILE)objcopy
 OBJDUMP	= $(CROSS_COMPILE)objdump

@@ -1,6 +1,3 @@
-// Standard includes
-#include <stdio.h>
-
 // Driverlib includes
 #include "hw_types.h"
 #include "hw_ints.h"
@@ -15,6 +12,9 @@
 #include "gpio.h"
 #include "utils.h"
 
+// Standard includes
+#include <stdio.h>
+
 // Local includes
 #include <uart0.h>
 #include <rgbled.h>
@@ -22,7 +22,7 @@
 #include <gpio_if.h>
 
 #define LED	30
-#define DELAY	64
+#define DELAY	256
 
 static inline void demo()
 {

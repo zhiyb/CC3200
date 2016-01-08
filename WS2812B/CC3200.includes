@@ -1,5 +1,6 @@
 .
 ../cc3200-sdk/driverlib
+../cc3200-sdk/simplelink/include
 ../cc3200-sdk/inc
 ../cc3200-sdk
 ../
