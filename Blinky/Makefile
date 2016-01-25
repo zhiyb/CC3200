@@ -1,4 +1,4 @@
-TRG	= HelloWorld
+TRG	= Blinky
 SRC	= main.c
 SRC	+= pin_mux_config.c
 SRC	+= startup_gcc.c

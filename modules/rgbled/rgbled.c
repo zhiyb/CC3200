@@ -30,9 +30,9 @@ static void send(uint8_t data)
 		gpio_pad_set(RGBLED_PAD);
 		if (!(data & 0x80))
 			gpio_pad_clear(RGBLED_PAD);
-		MAP_UtilsDelay(F_CPU / 10 * 4 / 10 / 1000 / 1000);
+		MAP_UtilsDelay(SYS_CLK / 10 * 4 / 10 / 1000 / 1000);
 		gpio_pad_clear(RGBLED_PAD);
-		MAP_UtilsDelay(F_CPU / 10 * 4 / 10 / 1000 / 1000);
+		MAP_UtilsDelay(SYS_CLK / 10 * 4 / 10 / 1000 / 1000);
 		data <<= 1;
 	} while (--cnt);
 }
@@ -44,7 +44,7 @@ void rgbLED_init()
 	gpio_pad_dir(RGBLED_PAD, GPIO_DIR_MODE_OUT);
 	gpio_pad_clear(RGBLED_PAD);
 
-	MAP_UtilsDelay(F_CPU / 10 * 10 / 1000);
+	MAP_UtilsDelay(SYS_CLK / 10 * 10 / 1000);
 }
 
 void rgbLED_refresh()

@@ -20,7 +20,7 @@
 #include "uart0.h"
 
 #define LED	30
-#define DELAY	(F_CPU / 10)
+#define DELAY	(SYS_CLK / 10)
 
 static void LEDBlinkyRoutine()
 {

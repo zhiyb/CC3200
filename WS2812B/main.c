@@ -58,7 +58,7 @@ static inline void demo()
 		}
 		led = (led + 1) % (DELAY << 1);
 
-		MAP_UtilsDelay(F_CPU / 10 / DELAY);
+		MAP_UtilsDelay(SYS_CLK / 10 / DELAY);
 	}
 }
 
