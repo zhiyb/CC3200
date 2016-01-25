@@ -10,8 +10,8 @@ INCDIRS	+= $(SDK)/inc
 INCDIRS	+= $(SDK)/driverlib
 INCDIRS	+= $(SDK)/simplelink/include
 
-LIBS	+= $(SDK)/driverlib/gcc/exe/libdriver_opt.a
 LIBS	+= $(SDK)/simplelink/gcc/exe/libsimplelink_nonos_opt.a
+LIBS	+= $(SDK)/driverlib/gcc/exe/libdriver_opt.a
 
 OBJCOPY	= $(CROSS_COMPILE)objcopy
 OBJDUMP	= $(CROSS_COMPILE)objdump

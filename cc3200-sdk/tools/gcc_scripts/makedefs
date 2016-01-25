@@ -98,6 +98,7 @@ ARMGCC_ROOT:=${shell dirname '${shell sh -c "which ${CC}"}'}/..
 #
 CPU=-mcpu=cortex-m4
 #FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+FPU	= -msoft-float -mfloat-abi=soft
 
 #
 # The flags passed to the assembler.
