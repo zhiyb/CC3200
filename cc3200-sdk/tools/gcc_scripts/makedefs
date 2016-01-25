@@ -117,7 +117,7 @@ CFLAGS=-mthumb             \
        -fdata-sections     \
        -MD                 \
        -std=c99            \
-       -g 		   \
+       -ggdb3 		   \
        -O0 		   \
        -c                  
 
@@ -134,8 +134,7 @@ LD=${PREFIX}-ld
 #
 # The flags passed to the linker.
 #
-LDFLAGS=--gc-sections
-
+LDFLAGS=--gc-sections -ggdb3
 
 #
 # Get the location of libgcc.a from the GCC front-end.
@@ -145,12 +144,12 @@ LIBGCC:=${shell ${CC} -mthumb ${CFLAGS} -print-libgcc-file-name}
 #
 # Get the location of libc.a from the GCC front-end.
 #
-LIBC:=${shell ${CC} ${CFLAGS} -print-file-name=libc.a}
+LIBC:=${shell ${CC} -mthumb ${CFLAGS} -print-file-name=libc.a}
 
 #
 # Get the location of libm.a from the GCC front-end.
 #
-LIBM:=${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
+LIBM:=${shell ${CC} -mthumb ${CFLAGS} -print-file-name=libm.a}
 
 #
 # The command for extracting images from the linked executables.

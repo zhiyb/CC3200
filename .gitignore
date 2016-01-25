@@ -1,3 +1,4 @@
 Makefile_platform.mk
 *.creator.user
 .*.swp
+*.log

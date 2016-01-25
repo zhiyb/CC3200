@@ -25,11 +25,6 @@ include $(SRCDIR)/$$(DIR)/Makefile
 endef
 $(foreach dir,$(SUBDIRS),$(eval $(call inc_subdir,$(dir))))
 
-# General target
-ifndef LIBTRG
-TRG	?= $(PRG)
-endif
-
 # Append configuration definations
 define checkconf
 ifdef $1
@@ -68,8 +63,6 @@ SIZE	= $(CROSS_COMPILE)size
 
 # Flags
 INCS	+= $(INCDIRS:%=-I$(SRCDIR)/%)
-FLAGS	?= -g -Wall
-#FLAGS	+= -Werror
 ifdef OPTLEVEL
 FLAGS	+= -O$(OPTLEVEL)
 endif
@@ -104,12 +97,8 @@ define verbose
 endef
 
 # Default rule
-ifdef LIBTRG
-all: lib
-else
 all: $(ELF) $(EXTRA_TARGETS)
 CLEAN_FILES	+= $(ELF)
-endif
 
 CLEAN_FILES	+= $(OBJS)
 $(ELF): $(OBJS) $(LIBFILES) $(LDSCRIPT)
@@ -135,20 +124,6 @@ $(ELF): $(OBJS) $(LIBFILES) $(LDSCRIPT)
 %.lst: %$(SUFFIX)
 	$(call verbose,"GEN	$@",\
 	$(OBJDUMP) -h -S $< > $@)
-
-# Rules for building library
-ifdef LIBTRG
-.PHONY: lib
-lib: lib-static
-
-.PHONY: lib-static
-lib-static: lib$(LIBTRG).a
-CLEAN_FILES	+= lib$(LIBTRG).a
-
-lib$(LIBTRG).a: $(OBJS)
-	$(call verbose,"AR	$@",\
-	$(AR) $(ARFLAGS) $@ $(OBJS))
-endif
 
 # Dependency
 -include $(OBJS:%.o=$(DEPDIR)/%.d)

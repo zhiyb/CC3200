@@ -16,26 +16,41 @@ CROSS_COMPILE	= arm-none-eabi-
 SUFFIX	= .axf
 
 # Definitions
-CPU	= -mcpu=cortex-m4
+CPU	= -mcpu=cortex-m4 -mthumb
 #FPU	= -mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 FPU	= -msoft-float -mfloat-abi=soft
 
-MCU_FREQ	= 80000000
-DEFS	+= -DF_CPU=$(MCU_FREQ)
+# System clock frequency
+DEFS	+= -DSYS_CLK=80000000
 
 ifdef BAUD
 DEFS	+= -DBAUD=$(BAUD)
 endif
 
-OPTLEVEL	?= 0
+OPTLEVEL	?= s
+
+FLAGS	+= -ggdb3 $(CPU) $(FPU)
+
+ASFLAG	+= -MD
+
+CFLAG	+= -ffunction-sections \
+	   -fdata-sections     \
+	   -MD                 \
+	   -std=c99
+
+LDFLAG	+= -Wl,--gc-sections --entry ${ENTRY} -ggdb3
 
 # Rules
-ifndef LIBTRG
 EXTRA_TARGETS	+= lst bin
 PHONYTRGS	+= lst
-endif
 
 include $(TOPDIR)/Makefile_generic.mk
+
+# Get the location of libs from the GCC front-end.
+LIBGCC:=${shell ${CC} ${CPU} -print-libgcc-file-name}
+LIBC:=${shell ${CC} ${CPU} -print-file-name=libc.a}
+LIBM:=${shell ${CC} ${CPU} -print-file-name=libm.a}
+LIBS	+= -nostdlib ${LIBC} ${LIBGCC} ${LIBM}
 
 # To choose a programming tool for specific platform,
 # write a Makefile_platform.mk file.
@@ -58,40 +73,11 @@ include $(TOPDIR)/Makefile_generic.mk
 run: flash
 	$(MAKE) uart
 
-#
-# Get the location of libgcc.a from the GCC front-end.
-#
-LIBGCC:=${shell ${CC} -mthumb -print-libgcc-file-name}
+openocd:
+	openocd -f $(TOPDIR)/platform/cc3200.cfg
 
-#
-# Get the location of libc.a from the GCC front-end.
-#
-LIBC:=${shell ${CC} -print-file-name=libc.a}
-
-#
-# Get the location of libm.a from the GCC front-end.
-#
-LIBM:=${shell ${CC} -print-file-name=libm.a}
-
-ASFLAG	+= -mthumb \
-	   ${CPU}  \
-	   ${FPU}  \
-	   -MD
-
-CFLAG	+= -mthumb             \
-	   ${CPU}              \
-	   ${FPU}              \
-	   -ffunction-sections \
-	   -fdata-sections     \
-	   -MD                 \
-	   -std=c99            \
-	   -g
-
-LDFLAG	+= ${CPU} ${FPU} -Wl,--gc-sections --entry ${ENTRY}
-LIBS	+= '${LIBM}' '${LIBC}' '${LIBGCC}'
-
-# Following are not needed when building libraries
-ifndef LIBTRG
+gdb: $(TRG)$(SUFFIX)
+	$(CROSS_COMPILE)gdb -x $(TOPDIR)/platform/gdbinit $<
 
 # Rules for building the binary image
 PHONYTRGS	+= bin
@@ -102,11 +88,8 @@ PHONYTRGS	+= bin
 
 # For program
 .PHONY: flash
-
 flash: bin
 	$(PROGRAM)
-
-endif
 
 # PHONY targets
 .PHONY: $(PHONYTRGS)
