@@ -8,6 +8,8 @@
 #include "uart.h"
 #include "uart0.h"
 
+#include <ctype.h>
+
 void uart0_init()
 {
 	// Enable Peripheral Clocks
@@ -40,10 +42,42 @@ void uart0_write_data(char *ptr, unsigned long length)
 
 void uart0_write_string(char *str)
 {
-	char c;
-	while ((c = *str) != '\0') {
+	while (*str != '\0') {
 		if (*str == '\n')
 			uart0_write('\r');
 		uart0_write(*str++);
 	}
+}
+
+unsigned long uart0_readline(char *buffer, unsigned long length)
+{
+	unsigned long cnt = 0;
+	long c;
+	length--;
+
+loop:
+	switch (c = uart0_read()) {
+	case '\n':
+	case '\r':
+		uart0_write('\r');
+		uart0_write('\n');
+		*buffer = '\0';
+		return cnt;
+	case '\x7f':	// Backspace
+		if (cnt) {
+			uart0_write(c);
+			buffer--;
+			cnt--;
+		}
+		break;
+	default:
+		if (!isprint(c) || cnt == length)
+			break;
+		uart0_write(c);
+		*buffer = c;
+		buffer++;
+		cnt++;
+	}
+
+	goto loop;
 }

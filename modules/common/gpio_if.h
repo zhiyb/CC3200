@@ -72,12 +72,12 @@ static inline unsigned long gpio_base_to_prcm(unsigned long base)
 
 // IO pad set direction
 // param: GPIO_DIR_MODE_OUT, GPIO_DIR_MODE_IN
-#define gpio_pad_dir(pad, dir)	MAP_GPIODirModeSet(gpio_pad_to_base(pad), 1UL << gpio_pad_to_pin(pad), dir);
+#define gpio_pad_dir(pad, dir)	MAP_GPIODirModeSet(gpio_pad_to_base(pad), 1UL << gpio_pad_to_pin(pad), dir)
 
 // IO pad clear (LOW)
-#define gpio_pad_clear(pad)	MAP_GPIOPinWrite(gpio_pad_to_base(pad), 1UL << gpio_pad_to_pin(pad), 0);
+#define gpio_pad_clear(pad)	MAP_GPIOPinWrite(gpio_pad_to_base(pad), 1UL << gpio_pad_to_pin(pad), 0)
 
 // IO pad set (HIGH)
-#define gpio_pad_set(pad)	MAP_GPIOPinWrite(gpio_pad_to_base(pad), 1UL << gpio_pad_to_pin(pad), 1UL << gpio_pad_to_pin(pad));
+#define gpio_pad_set(pad)	MAP_GPIOPinWrite(gpio_pad_to_base(pad), 1UL << gpio_pad_to_pin(pad), 1UL << gpio_pad_to_pin(pad))
 
 #endif

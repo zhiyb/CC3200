@@ -1,8 +1,8 @@
 Makefile_platform.mk
-*.creator.user
+*.user
+*.user.*
 .*.swp
 *.log
-=======
 *.axf
 *.o
 *.lst
