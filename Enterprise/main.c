@@ -37,15 +37,18 @@ static struct {
 
 static void startDevice()
 {
-	uart0_write_string(ESC_YELLOW "Starting device...\n");
 	status.role = sl_Start(NULL, NULL, NULL);
+}
+
+static void stopDevice()
+{
+	sl_Stop(0xff);
 }
 
 static unsigned long openWlan()
 {
 	long ret;
-	uart0_write_string(ESC_YELLOW "Starting device...\n");
-	if ((ret = sl_Start(NULL, NULL, NULL)) != ROLE_STA) {
+	if (status.role != ROLE_STA) {
 		sprintf(buffer, ESC_YELLOW "Changing device role from %d to STA...\n", ret);
 		if ((ret = sl_WlanSetMode(ROLE_STA)) != 0)
 			return ret;
@@ -226,6 +229,7 @@ int main()
 	long ret;
 	init();
 
+	uart0_write_string(ESC_YELLOW "Starting device...\n");
 	startDevice();
 
 start:
@@ -235,17 +239,19 @@ start:
 	if ((ret = openWlan()) != 0)
 		goto retry;
 
-	uart0_write_string(ESC_YELLOW "Finished, stopping device...\n");
-	sl_Stop(0xff);
-
 	uart0_write_string(ESC_CYAN "Done.\n");
 	uart0_readline(buffer, sizeof(buffer));
+
+	uart0_write_string(ESC_YELLOW "Restarting device...\n");
+	stopDevice();
+	startDevice();
 	goto start;
 
 retry:
-	sprintf(buffer, ESC_GREY "Failed: %d, stopping device and retry...\n", ret);
+	sprintf(buffer, ESC_GREY "Failed: %d, restarting device and retry...\n", ret);
 	uart0_write_string(buffer);
-	sl_Stop(0xff);
-	UtilsDelay(80000000 * 2);
+	stopDevice();
+	startDevice();
+	UtilsDelay(80000000);
 	goto start;
 }
