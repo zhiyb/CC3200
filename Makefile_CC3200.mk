@@ -26,7 +26,7 @@ CPU	= -mcpu=cortex-m4 -mthumb
 FPU	= -msoft-float -mfloat-abi=soft
 
 # System clock frequency
-DEFS	+= -DSYS_CLK=80000000
+DEFS	+= -DSYS_CLK=80000000 -Dgcc
 
 ifdef BAUD
 DEFS	+= -DBAUD=$(BAUD)
@@ -55,7 +55,7 @@ include $(TOPDIR)/Makefile_generic.mk
 LIBGCC:=${shell ${CC} ${CPU} -print-libgcc-file-name}
 LIBC:=${shell ${CC} ${CPU} -print-file-name=libc.a}
 LIBM:=${shell ${CC} ${CPU} -print-file-name=libm.a}
-LIBS	+= -nostdlib ${LIBC} ${LIBGCC} ${LIBM}
+LIBS	+= -nostartfiles -nostdlib ${LIBC} ${LIBGCC} ${LIBM}
 
 # To choose a programming tool for specific platform,
 # write a Makefile_platform.mk file.

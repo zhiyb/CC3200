@@ -86,15 +86,10 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
 	;
 }
 
-#if defined(ccs)
 extern void (* const g_pfnVectors[])(void);
-#endif
 static void init()
 {
-	// Set vector table base
-	#if defined(ccs)
-		MAP_IntVTableBaseSet((unsigned long)&g_pfnVectors[0]);
-	#endif
+	MAP_IntVTableBaseSet((unsigned long)&g_pfnVectors[0]);
 
 	MAP_IntMasterEnable();
 	MAP_IntEnable(FAULT_SYSTICK);

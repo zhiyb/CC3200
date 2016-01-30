@@ -7,3 +7,5 @@ Makefile_platform.mk
 *.o
 *.lst
 *.bin
+.deps
+*.a

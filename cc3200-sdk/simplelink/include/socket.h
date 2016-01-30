@@ -422,7 +422,7 @@ extern "C" {
 #define bind                                sl_Bind
 #define listen                              sl_Listen
 #define connect                             sl_Connect
-#define select                              sl_Select
+#define select(...)                         sl_Select(__VA_ARGS__)
 #define setsockopt                          sl_SetSockOpt
 #define getsockopt                          sl_GetSockOpt
 #define recv                                sl_Recv
