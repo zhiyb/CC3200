@@ -1,4 +1,4 @@
-TRG	= Enterprise
+TRG	= demo
 SRC	= main.c events.c fs.c device.c
 SRC	+= startup_gcc.c
 SUBDIRS	= uart0 rgbled common
