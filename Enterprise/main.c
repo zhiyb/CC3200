@@ -12,17 +12,22 @@
 #include "gpio.h"
 #include "flash.h"
 #include "utils.h"
+
 #include "simplelink.h"
 
 // Standard includes
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <ctype.h>
 
 // Local includes
 #include "uart0/uart0.h"
 #include "common/gpio_if.h"
 #include "common/escape.h"
+#include "global.h"
+#include "fs.h"
+#include "device.h"
 
 #define LED	9
 
@@ -30,36 +35,19 @@
 extern void (* const g_pfnVectors[])(void);
 #endif
 
-static char buffer[128];
-static struct {
-	_i16 role;
-} status;
+char buffer[128];
+struct status_t status;
 
-static void startDevice()
+static _i16 openWlan()
 {
-	status.role = sl_Start(NULL, NULL, NULL);
-}
-
-static void stopDevice()
-{
-	sl_Stop(0xff);
-}
-
-static unsigned long openWlan()
-{
-	long ret;
-	if (status.role != ROLE_STA) {
-		sprintf(buffer, ESC_YELLOW "Changing device role from %d to STA...\n", ret);
-		if ((ret = sl_WlanSetMode(ROLE_STA)) != 0)
-			return ret;
-		uart0_write_string(ESC_YELLOW "Stopping device...\n");
-		if ((ret = sl_Stop(0xff)) != 0)
-			return ret;
-		uart0_write_string(ESC_YELLOW "Starting device...\n");
-		if ((ret = sl_Start(NULL, NULL, NULL)) != 0)
-			return ret;
+	if (setDeviceRole(ROLE_STA) != ROLE_STA) {
+		uart0_write_string(ESC_GREY "Unable to change device role: ");
+		sprintf(buffer, "%d\n", status.role);
+		uart0_write_string(buffer);
+		return -1;
 	}
 
+	_i16 ret;
 #if 0
 	// Get the device's version-information
 	SlVersionFull ver = {0};
@@ -93,115 +81,8 @@ static unsigned long openWlan()
 	return 0;
 }
 
-static void printFileInfo(const char *path)
+void printWlanScan()
 {
-	SlFsFileInfo_t info;
-	_i16 ret = sl_FsGetInfo(path, 0, &info);
-	if (ret != 0) {
-		uart0_write_string(ESC_GREY "Getting file info of ");
-		uart0_write_string(path);
-		uart0_write_string(" failed with: ");
-		sprintf(buffer, "%d\n", ret);
-		uart0_write_string(buffer);
-		return;
-	}
-
-	sprintf(buffer, ESC_WHITE "Flags: 0x%04x\n", info.flags);
-	uart0_write_string(buffer);
-	sprintf(buffer, "Length: %lu\n", info.FileLen);
-	uart0_write_string(buffer);
-	sprintf(buffer, "Allocated length: %lu\n", info.AllocatedLen);
-	uart0_write_string(buffer);
-	uart0_write_string("Token: ");
-	_u32 i;
-	for (i = 0; i < 4; i++) {
-		sprintf(buffer, "0x%08lx ", info.Token[i]);
-		uart0_write_string(buffer);
-	}
-	uart0_write_string("\n");
-}
-
-// This function handles HTTP server events
-void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pHttpEvent, SlHttpServerResponse_t *pHttpResponse)
-{
-	// Unused in this application
-}
-
-// This function handles network events such as IP acquisition, IP leased, IP released etc.
-void SimpleLinkNetAppEventHandler(SlNetAppEvent_t *pNetAppEvent)
-{
-	switch (pNetAppEvent->Event) {
-	case SL_NETAPP_IPV4_IPACQUIRED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_NETAPP_IPV4_IPACQUIRED_EVENT\n");
-		break;
-	case SL_NETAPP_IP_LEASED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_NETAPP_IP_LEASED_EVENT\n");
-		break;
-	case SL_NETAPP_IP_RELEASED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_NETAPP_IP_RELEASED_EVENT\n");
-		break;
-	default:
-		uart0_write_string(ESC_MAGENTA "SL_NETAPP_IP_UNKNOWN_EVENT\n");
-		break;
-	};
-}
-
-// This function handles socket events indication
-void SimpleLinkSockEventHandler(SlSockEvent_t *pSockEvent)
-{
-	switch (pSockEvent->Event) {
-	case SL_SOCKET_TX_FAILED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_SOCKET_TX_FAILED_EVENT");
-		break;
-	case SL_SOCKET_ASYNC_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_SOCKET_ASYNC_EVENT");
-		break;
-	default:
-		uart0_write_string(ESC_MAGENTA "SL_SOCKET_UNKNOWN_EVENT");
-		break;
-	};
-}
-
-// The Function Handles WLAN Events
-void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
-{
-	switch (pWlanEvent->Event) {
-#if 0
-	case SL_DEVICE_FATAL_ERROR_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_DEVICE_FATAL_ERROR_EVENT");
-		break;
-#endif
-	case SL_WLAN_CONNECT_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_CONNECT_EVENT");
-		break;
-	case SL_WLAN_DISCONNECT_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_DISCONNECT_EVENT");
-		break;
-	case SL_WLAN_STA_CONNECTED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_STA_CONNECTED_EVENT");
-		break;
-	case SL_WLAN_STA_DISCONNECTED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_STA_DISCONNECTED_EVENT");
-		break;
-	case SL_WLAN_SMART_CONFIG_COMPLETE_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_SMART_CONFIG_COMPLETE_EVENT");
-		break;
-	case SL_WLAN_SMART_CONFIG_STOP_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_SMART_CONFIG_STOP_EVENT");
-		break;
-	case SL_WLAN_P2P_DEV_FOUND_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_P2P_DEV_FOUND_EVENT");
-		break;
-	case SL_WLAN_P2P_NEG_REQ_RECEIVED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_P2P_NEG_REQ_RECEIVED_EVENT");
-		break;
-	case SL_WLAN_CONNECTION_FAILED_EVENT:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_CONNECTION_FAILED_EVENT");
-		break;
-	default:
-		uart0_write_string(ESC_MAGENTA "SL_WLAN_UNKNOWN_EVENT");
-		break;
-	};
 }
 
 static void init()
@@ -233,25 +114,38 @@ int main()
 	startDevice();
 
 start:
-	printFileInfo("/sys/mcuimg.bin");
-	printFileInfo("/sys/ca.pem");
-
-	if ((ret = openWlan()) != 0)
-		goto retry;
-
-	uart0_write_string(ESC_CYAN "Done.\n");
+	uart0_write_string(ESC_WHITE "> " ESC_DEFAULT);
 	uart0_readline(buffer, sizeof(buffer));
-
-	uart0_write_string(ESC_YELLOW "Restarting device...\n");
-	stopDevice();
-	startDevice();
-	goto start;
-
-retry:
-	sprintf(buffer, ESC_GREY "Failed: %d, restarting device and retry...\n", ret);
-	uart0_write_string(buffer);
-	stopDevice();
-	startDevice();
-	UtilsDelay(80000000);
+	if (strncmp(buffer, "fs-", 3) == 0) {
+		char *cmd = buffer + 3;
+		if (strncmp(cmd, "info ", 5) == 0) {
+			cmd += 5;
+			while (*cmd == ' ')
+				cmd++;
+			if (isgraph(*cmd))
+				printFileInfo(cmd);
+			//printFileInfo("/sys/mcuimg.bin");
+			//printFileInfo("/sys/ca.pem");
+		}
+	} else if (strncmp(buffer, "dev-", 4) == 0) {
+		char *cmd = buffer + 4;
+		if (strcmp(cmd, "stop") == 0) {
+			uart0_write_string(ESC_YELLOW "Stopping device...\n");
+			stopDevice();
+		} else if (strcmp(cmd, "start") == 0) {
+			uart0_write_string(ESC_YELLOW "Starting device... ");
+			sprintf(buffer, "%d\n", startDevice());
+			uart0_write_string(buffer);
+		} else if (strcmp(cmd, "restart") == 0) {
+			uart0_write_string(ESC_YELLOW "Restarting device... ");
+			stopDevice();
+			sprintf(buffer, "%d\n", startDevice());
+			uart0_write_string(buffer);
+		}
+	} else if (strncmp(buffer, "wlan-", 5) == 0) {
+		char *cmd = buffer + 5;
+		if (strcmp(cmd, "scan") == 0)
+			printWlanScan();
+	}
 	goto start;
 }
