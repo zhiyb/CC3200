@@ -231,3 +231,14 @@ startup_gcc.c
 rgbled/Makefile
 common/escape.h
 fs.h
+device.c
+device.h
+events.c
+fs.c
+fs.h
+global.h
+main.c
+Makefile
+startup_gcc.c
+wlan.c
+wlan.h

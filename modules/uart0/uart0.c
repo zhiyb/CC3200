@@ -81,3 +81,9 @@ loop:
 
 	goto loop;
 }
+
+void uart0_read_data(char *ptr, unsigned long length)
+{
+	while (length--)
+		*ptr = uart0_read();
+}

@@ -61,7 +61,6 @@ static void init()
 
 int main()
 {
-	long ret;
 	init();
 
 	uart0_write_string(ESC_YELLOW "Starting device...\n");
@@ -80,6 +79,12 @@ start:
 				printFileInfo(cmd);
 			//printFileInfo("/sys/mcuimg.bin");
 			//printFileInfo("/sys/ca.pem");
+		} else if (strncmp(cmd, "write", 5) == 0) {
+			cmd += 5;
+			while (*cmd == ' ')
+				cmd++;
+			if (isgraph(*cmd))
+				receiveFile(cmd);
 		}
 	} else if (strncmp(buffer, "dev-", 4) == 0) {
 		char *cmd = buffer + 4;

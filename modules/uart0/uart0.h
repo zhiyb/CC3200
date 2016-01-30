@@ -45,6 +45,10 @@ void uart0_write_data(char *ptr, unsigned long length);
 // Write string
 void uart0_write_string(const char *str);
 
+// Read data
+void uart0_read_data(char *ptr, unsigned long length);
+
+// readline for user input
 unsigned long uart0_readline(char *buffer, unsigned long length);
 
 #ifdef __cplusplus
