@@ -12,6 +12,10 @@ extern "C" {
 #include "hw_memmap.h"
 #include "uart.h"
 
+#ifndef UART0_BAUD
+#define UART0_BAUD	115200
+#endif
+
 // Initialise UART 0
 void uart0_init();
 
@@ -39,7 +43,7 @@ void uart0_init();
 void uart0_write_data(char *ptr, unsigned long length);
 
 // Write string
-void uart0_write_string(char *str);
+void uart0_write_string(const char *str);
 
 unsigned long uart0_readline(char *buffer, unsigned long length);
 

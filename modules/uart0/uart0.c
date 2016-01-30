@@ -21,7 +21,7 @@ void uart0_init()
 
 	MAP_UARTDisable(UARTA0_BASE);
 
-	MAP_UARTConfigSetExpClk(UARTA0_BASE, MAP_PRCMPeripheralClockGet(PRCM_UARTA0), BAUD, UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE);
+	MAP_UARTConfigSetExpClk(UARTA0_BASE, MAP_PRCMPeripheralClockGet(PRCM_UARTA0), UART0_BAUD, UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE);
 	//MAP_UARTDMADisable(UARTA0_BASE, UART_DMA_RX | UART_DMA_TX);
 	//MAP_UARTTxIntModeSet(UARTA0_BASE, UART_TXINT_MODE_FIFO);
 	//MAP_UARTIntDisable(UARTA0_BASE, UART_INT_OE | UART_INT_BE | UART_INT_PE | UART_INT_FE | UART_INT_RT | UART_INT_TX | UART_INT_RX | UART_INT_CTS);
@@ -40,7 +40,7 @@ void uart0_write_data(char *ptr, unsigned long length)
 		uart0_write(*ptr++);
 }
 
-void uart0_write_string(char *str)
+void uart0_write_string(const char *str)
 {
 	while (*str != '\0') {
 		if (*str == '\n')

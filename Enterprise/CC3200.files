@@ -229,3 +229,4 @@ startup_gcc.c
 ../cc3200-sdk/simplelink_extlib/ota/OtaHttp.c
 ../cc3200-sdk/simplelink_extlib/ota/OtaHttp.h
 rgbled/Makefile
+common/escape.h

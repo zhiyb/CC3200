@@ -28,10 +28,6 @@ FPU	= -msoft-float -mfloat-abi=soft
 # System clock frequency
 DEFS	+= -DSYS_CLK=80000000 -Dgcc
 
-ifdef BAUD
-DEFS	+= -DBAUD=$(BAUD)
-endif
-
 OPTLEVEL	?= s
 
 FLAGS	+= -ggdb3 $(CPU) $(FPU)

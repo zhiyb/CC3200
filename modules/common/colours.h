@@ -7,15 +7,6 @@
 
 #include <stdint.h>
 
-#define ESC_GREY	"\e[90m"
-#define ESC_RED		"\e[91m"
-#define ESC_GREEN	"\e[92m"
-#define ESC_YELLOW	"\e[93m"
-#define ESC_BLUE	"\e[94m"
-#define ESC_MAGENTA	"\e[95m"
-#define ESC_CYAN	"\e[96m"
-#define ESC_WHITE	"\e[97m"
-
 // Combine RGB/HSV components
 #define COLOUR_888(r, g, b)	((((uint32_t)(r) & 0xff) << 16) | \
 				(((uint32_t)(g) & 0xff) << 8) | \
