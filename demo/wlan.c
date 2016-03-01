@@ -9,8 +9,8 @@
 #include <ctype.h>
 
 // Local includes
-#include "uart0/uart0.h"
-#include "common/escape.h"
+#include <uart0.h>
+#include <escape.h>
 #include "global.h"
 #include "device.h"
 
@@ -77,7 +77,7 @@ void printWlanScan()
 		sprintf(buffer, ESC_WHITE "\nNetwork %u:\n" ESC_GREY, i);
 		uart0_write_string(buffer);
 		uart0_write_string("SSID:\t\t");
-		uart0_write_data(entry->ssid, entry->ssid_len);
+		uart0_write_data((char *)entry->ssid, entry->ssid_len);
 		uart0_write_string("\n");
 		sprintf(buffer, "Security:\t%u\n", entry->sec_type);
 		uart0_write_string(buffer);

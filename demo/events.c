@@ -1,7 +1,7 @@
 #include "simplelink.h"
 
-#include "uart0/uart0.h"
-#include "common/escape.h"
+#include <uart0.h>
+#include <escape.h>
 
 // This function handles HTTP server events
 void SimpleLinkHttpServerCallback(SlHttpServerEvent_t *pHttpEvent, SlHttpServerResponse_t *pHttpResponse)

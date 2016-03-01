@@ -8,15 +8,15 @@
 #include <stdlib.h>
 
 // Local includes
-#include "uart0/uart0.h"
-#include "common/escape.h"
+#include <uart0.h>
+#include <escape.h>
 #include "global.h"
 #include "fs.h"
 
 void printFileInfo(const char *path)
 {
 	SlFsFileInfo_t info;
-	_i16 ret = sl_FsGetInfo(path, 0, &info);
+	_i16 ret = sl_FsGetInfo((const _u8 *)path, 0, &info);
 	if (ret != 0) {
 		uart0_write_string(ESC_GREY "Getting file info of ");
 		uart0_write_string(path);
@@ -56,24 +56,24 @@ void receiveFile(char *cmd)
 	uart0_write_string("for read...\n");
 	_i32 handle;
 	_i32 ret;
-	if ((ret = sl_FsOpen(cmd, FS_MODE_OPEN_CREATE(size, FS_MODE_OPEN_WRITE), NULL, &handle)) != 0) {
-		sprintf(buffer, ESC_GREY "Error: %d\n", ret);
+	if ((ret = sl_FsOpen((const _u8 *)cmd, FS_MODE_OPEN_CREATE(size, FS_MODE_OPEN_WRITE), NULL, &handle)) != 0) {
+		sprintf(buffer, ESC_GREY "Error: %ld\n", ret);
 		uart0_write_string(buffer);
 	}
 
 	uart0_write_string(ESC_CYAN "Receiving file data...\n" ESC_DEFAULT);
 	_u32 offset = 0;
 	while (size) {
-		_u32 block = sizeof(buffer) > size ? size : sizeof(buffer);
+		_u32 block = sizeof(buffer) > (_u32)size ? (_u32)size : sizeof(buffer);
 		uart0_read_data(buffer, block);
-		if ((ret = sl_FsWrite(handle, offset, buffer, block)) != block) {
-			sprintf(buffer, ESC_GREY "Error: %d\n", ret);
+		if ((ret = sl_FsWrite(handle, offset, (_u8 *)buffer, block)) != (_i32)block) {
+			sprintf(buffer, ESC_GREY "Error: %ld\n", ret);
 			uart0_write_string(buffer);
 		}
 		size -= block;
 		offset += block;
 	}
-	sprintf(buffer, ESC_CYAN "%u bytes received.\n", offset);
+	sprintf(buffer, ESC_CYAN "%lu bytes received.\n", offset);
 	uart0_write_string(buffer);
 	sl_FsClose(handle, NULL, NULL, 0);
 }

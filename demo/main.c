@@ -22,9 +22,9 @@
 #include <ctype.h>
 
 // Local includes
-#include "uart0/uart0.h"
-#include "common/gpio_if.h"
-#include "common/escape.h"
+#include <uart0.h>
+#include <gpio_if.h>
+#include <escape.h>
 #include "global.h"
 #include "fs.h"
 #include "device.h"
@@ -79,12 +79,6 @@ start:
 				printFileInfo(cmd);
 			//printFileInfo("/sys/mcuimg.bin");
 			//printFileInfo("/sys/ca.pem");
-		} else if (strncmp(cmd, "write", 5) == 0) {
-			cmd += 5;
-			while (*cmd == ' ')
-				cmd++;
-			if (isgraph(*cmd))
-				receiveFile(cmd);
 		}
 	} else if (strncmp(buffer, "dev-", 4) == 0) {
 		char *cmd = buffer + 4;
