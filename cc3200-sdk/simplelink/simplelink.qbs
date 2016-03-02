@@ -5,7 +5,12 @@ Product {
     name: "cc3200-sdk-simplelink"
     cpp.includePaths: [".", "include"]
     cpp.defines: ["SL_FULL"]
-    cpp.commonCompilerFlags: ["-Wno-missing-braces", "-Wno-missing-field-initializers"]
+    cpp.commonCompilerFlags: [
+        "-Wno-missing-braces",
+        "-Wno-missing-field-initializers",
+        "-Wno-strict-aliasing",
+    ]
+    cpp.optimization: project.optimization
 
     Depends {name: "cc3200-sdk-driverlib"}
     Depends {name: "cc3200-sdk"}

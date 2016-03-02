@@ -2,6 +2,7 @@ import qbs
 
 Product {
     name: "cc3200-sdk"
+    cpp.optimization: project.optimization
 
     property var mcuflags: ["-mcpu=cortex-m4", "-mthumb", "-msoft-float", "-mfloat-abi=soft"]
     Depends {name: "cpp"}

@@ -3,6 +3,14 @@ import qbs
 Product {
     type: "staticlibrary"
     name: "common"
+    cpp.optimization: project.optimization
+    Depends {name: "cpp"}
+
+    Export {
+        Depends {name: "cpp"}
+        cpp.includePaths: [product.sourceDirectory]
+    }
+
     files: [
         "colours.c",
         "colours.h",
@@ -11,10 +19,4 @@ Product {
         "macros.h",
         "timer_if.h",
     ]
-    Depends {name: "cpp"}
-
-    Export {
-        Depends {name: "cpp"}
-        cpp.includePaths: [product.sourceDirectory]
-    }
 }

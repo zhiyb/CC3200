@@ -3,6 +3,7 @@ import qbs
 Product {
     type: "staticlibrary"
     name: "cc3200-sdk-driverlib"
+    cpp.optimization: project.optimization
     Depends {name: "cc3200-sdk"}
     Depends {name: "cpp"}
 
