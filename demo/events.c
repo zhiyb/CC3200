@@ -1,3 +1,4 @@
+#include "hw_types.h"
 #include "simplelink.h"
 
 #include <uart0.h>

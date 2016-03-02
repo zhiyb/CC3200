@@ -2,8 +2,6 @@
 #include "hw_types.h"
 #include "hw_ints.h"
 #include "hw_memmap.h"
-#include "hw_common_reg.h"
-#include "hw_apps_rcm.h"
 #include "interrupt.h"
 #include "pin.h"
 #include "rom.h"

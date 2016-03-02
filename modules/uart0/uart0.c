@@ -10,6 +10,11 @@
 
 #include <ctype.h>
 
+#ifndef UART0_BAUD
+#warning UART0_BAUD not defined, defaulting to 115200
+#define UART0_BAUD	115200
+#endif
+
 void uart0_init()
 {
 	// Enable Peripheral Clocks

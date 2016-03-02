@@ -1,5 +1,4 @@
 #include <math.h>
-#include <uart0.h>
 #include "colours.h"
 
 uint32_t colour_hsv_to_rgb(uint32_t hsv)

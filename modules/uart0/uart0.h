@@ -7,14 +7,9 @@
 extern "C" {
 #endif
 
-#include "hw_types.h"
 #include "rom_map.h"
-#include "hw_memmap.h"
+#include "hw_types.h"
 #include "uart.h"
-
-#ifndef UART0_BAUD
-#define UART0_BAUD	115200
-#endif
 
 // Initialise UART 0
 void uart0_init();
