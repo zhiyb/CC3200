@@ -3,7 +3,7 @@ import qbs
 Product {
     type: "staticlibrary"
     name: "uart0"
-    cpp.optimization: project.optimization
+    cpp.optimization: "small"
     Depends {name: "cpp"}
     Depends {name: "cc3200-sdk"}
     Depends {name: "cc3200-sdk-driverlib"}
@@ -15,11 +15,12 @@ Product {
 
     Export {
         Depends {name: "cpp"}
-        cpp.includePaths: [product.sourceDirectory]
+        cpp.includePaths: ["."]
+        cpp.defines: product.cpp.defines
     }
 
     files: [
-        "uart0.c",
-        "uart0.h",
+        "*.c",
+        "*.h",
     ]
 }

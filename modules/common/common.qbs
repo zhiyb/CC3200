@@ -3,20 +3,17 @@ import qbs
 Product {
     type: "staticlibrary"
     name: "common"
-    cpp.optimization: project.optimization
+    cpp.optimization: "small"
     Depends {name: "cpp"}
+    Depends {name: "cc3200-sdk"}
 
     Export {
         Depends {name: "cpp"}
-        cpp.includePaths: [product.sourceDirectory]
+        cpp.includePaths: ["."]
     }
 
     files: [
-        "colours.c",
-        "colours.h",
-        "escape.h",
-        "gpio_if.h",
-        "macros.h",
-        "timer_if.h",
+        "*.c",
+        "*.h",
     ]
 }

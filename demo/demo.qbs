@@ -1,10 +1,9 @@
 import qbs
 
 Project {
-    property string cc3200sdk: "../cc3200-sdk/"
+    property string cc3200sdk: "../../embedded-drivers/cc3200-sdk/"
     property string moduleDir: "../modules/"
 
-    property string optimization: "small"
     property string target: "NONOS"
     property int uart0_baud: 115200
 
@@ -23,12 +22,11 @@ Project {
         Depends {name: "cc3200-sdk-driverlib"}
         Depends {name: "cc3200-sdk-simplelink"}
 
-        cpp.optimization: project.optimization
+        cpp.optimization: "small"
         cpp.commonCompilerFlags: ["-Wno-char-subscripts"]
         cpp.linkerScripts: ["cc3200.ld"]
 
         files: [
-            "cc3200.ld",
             "device.c",
             "device.h",
             "events.c",
